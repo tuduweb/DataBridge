@@ -8,15 +8,25 @@
 class SocketBridge : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(int currentRecPort READ CurrentRecPort)
+
+
+
+    //Q_PROPERTY (LanguageType currentLanguage READ getLanguage WRITE setLanguage NOTIFY languageChanged) // 导出currentLanguage及对应的get，set接口 get为const
+    //Q_ENUMS(LanguageType) // 导出枚举类型
+
+
 public:
     explicit SocketBridge(QObject *parent = nullptr);
     ~SocketBridge();
 
     QHostAddress currentClientAddress;
     QUdpSocket  *udpSocket;//udp
-
-
     quint16 currentRecPort;
+    int CurrentRecPort();
+
+
 
     void udpSendData(QByteArray byteArray);
 

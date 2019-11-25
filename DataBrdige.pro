@@ -1,4 +1,4 @@
-QT += quick network
+QT +=core quick network
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -15,7 +15,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     datacenter.cpp \
-    Bridge/socketbridge.cpp
+    Bridge/socketbridge.cpp \
+    Core/settingcore.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,4 +33,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     datacenter.h \
-    Bridge/socketbridge.h
+    Bridge/socketbridge.h \
+    Core/settingcore.h
