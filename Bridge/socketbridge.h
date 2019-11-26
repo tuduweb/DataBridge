@@ -11,6 +11,9 @@ class SocketBridge : public QObject
 
     Q_PROPERTY(int currentRecPort READ CurrentRecPort)
 
+    Q_PROPERTY(int recPort READ recPort WRITE setRecPort NOTIFY recPortChanged)
+    Q_PROPERTY(QString ipAddress READ ipAddress WRITE setIpAddress NOTIFY ipAddressChanged)
+
 
 
     //Q_PROPERTY (LanguageType currentLanguage READ getLanguage WRITE setLanguage NOTIFY languageChanged) // 导出currentLanguage及对应的get，set接口 get为const
@@ -24,19 +27,30 @@ public:
     QHostAddress currentClientAddress;
     QUdpSocket  *udpSocket;//udp
     quint16 currentRecPort;
-    int CurrentRecPort();
 
+    int CurrentRecPort() const;
+    int recPort() const;
+    QString ipAddress() const;
+    int currentFlag() const;
 
-
+    void setRecPort(int port);
+    void setIpAddress(QString ip);
     void udpSendData(QByteArray byteArray);
 
-
+private:
+    int _recPort;
+    QString _ipAddress;
+    int _currentFlag;
 
 signals:
     void receivedData(QByteArray byteArray);
     void warning(QString str);
     void error(QString str);
     void newMassage(QString str);
+
+    //test for qml q_property
+    void recPortChanged();
+    void ipAddressChanged();
 
 public slots:
 

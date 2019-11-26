@@ -63,7 +63,7 @@ ApplicationWindow {
                 text: "Port"
             }
             TextField{
-                text: socketBridge.currentRecPort
+                text: socketBridge.recPort
             }
 
 

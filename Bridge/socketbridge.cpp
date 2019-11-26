@@ -3,7 +3,6 @@
 
 #include <Core/settingcore.h>
 
-
 SocketBridge::SocketBridge(QObject *parent) : QObject(parent)
 {
     QSharedPointer<SettingCore> settingCore = SettingCore::getIns();
@@ -29,7 +28,15 @@ SocketBridge::SocketBridge(QObject *parent) : QObject(parent)
 
     currentRecPort = (quint16)settingCore->settings->value("port",QVariant(5556)).toInt();
     //currentClientAddress = <QHostAddress> 选定一个
-    qDebug()<<currentRecPort;
+    //qDebug()<<currentRecPort;
+
+    _ipAddress = QString("123.22.22.33");
+    _recPort = 5533;
+    qDebug() << _recPort;
+
+    connect(this,&SocketBridge::recPortChanged,this,[=](){
+        qDebug() << "changed" << _recPort;
+    });
 
 
     //需要把以上数据渲染出去.
@@ -53,9 +60,36 @@ SocketBridge::~SocketBridge()
     //
 }
 
-int SocketBridge::CurrentRecPort()
+int SocketBridge::CurrentRecPort() const
 {
     return currentRecPort;
+}
+
+int SocketBridge::recPort() const
+{
+    return _recPort;
+}
+
+QString SocketBridge::ipAddress() const
+{
+    return _ipAddress;
+}
+
+int SocketBridge::currentFlag() const
+{
+    return _currentFlag;
+}
+
+void SocketBridge::setRecPort(int port)
+{
+    _recPort = port;
+    emit recPortChanged();
+}
+
+void SocketBridge::setIpAddress(QString ip)
+{
+    _ipAddress = ip;
+    emit ipAddressChanged();
 }
 
 //UDP数据接收
