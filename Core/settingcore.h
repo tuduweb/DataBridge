@@ -25,6 +25,8 @@ class SettingCore : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QVariantList ipList READ ipList WRITE setIpList NOTIFY ipListChanged)
+
     //测试一个列表类型 这里的属性还是不知道 name? 因为QList中是一个个的QVariant 不符合设计需求
     //Q_PROPERTY(QQmlListProperty<QVariant> params READ params)
 
@@ -42,6 +44,11 @@ public:
 
     Q_INVOKABLE QVariant value(const QString name);
 
+    //测试一个方法
+    Q_INVOKABLE QVariantList getIpAddress();
+    QVariantList ipList() const;
+    void setIpList(const QVariant ipList);
+
 
     QQmlListProperty<QVariant> params();
 
@@ -52,8 +59,11 @@ private:
 
     QList<QVariant*> _params;
 
+    QVariantList _ipList;
+
 
 signals:
+    void ipListChanged();
 
 public slots:
 };

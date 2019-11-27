@@ -43,12 +43,27 @@ ApplicationWindow {
             }
 
             ComboBox {
-                textRole: "key"
-                model: ListModel {
-                    ListElement { key: "First"; value: 123 }
-                    ListElement { key: "Second"; value: 456 }
-                    ListElement { key: "Third"; value: 789 }
-                }
+                id: comboBox
+                model: settings.ipList
+
+//                //如果需要定制下拉列表内容
+//                delegate: ItemDelegate {
+//                    width: parent.width
+//                    height: 40
+//                    Text{
+//                        anchors.fill: parent
+//                        text: "IP" + modelData
+
+//                    }
+
+
+//                    MouseArea {
+//                        anchors.fill: parent
+//                        // ...
+//                        onClicked: comboBox.popup.close()
+//                    }
+//                }
+
             }
 
 //            TextField{
@@ -83,8 +98,23 @@ ApplicationWindow {
             Button{
                 text: "button"
                 onClicked: {
-                    settings.value("udp/port") = 222;
+                    //settings.value("udp/port") = 222;
                     console.log(settings.value("udp/port"));
+                }
+            }
+
+
+
+            Button{
+                text: "ipAddress"
+                onClicked: console.log(settings.getIpAddress());
+            }
+
+            Button{
+                text: "QVariantList"
+                onClicked: {
+                    settings.ipList.push("127.0.0.2");
+                    console.log(settings.ipList);
                 }
             }
 

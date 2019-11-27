@@ -2,6 +2,9 @@
 #include <QDebug>
 
 #include <QCoreApplication>
+#include <QNetworkInterface>
+
+#include <QQmlListProperty>
 
 //.h里面定义的成员变量必须在.cpp内实例化才不会报错
 QMutex SettingCore::m_Mutex;
@@ -26,14 +29,34 @@ SettingCore::SettingCore(QObject *parent) : QObject(parent)
     settings->setValue("graph/ch1_name",QVariant("kk"));
     settings->setValue("graph/ch2_name",QVariant("tt"));
 
-    qDebug() << settings->value("udp/port").isNull();
-    qDebug() << settings->value("udp/port").toInt();
-    qDebug() << settings;
+//    qDebug() << settings->value("udp/port").isNull();
+//    qDebug() << settings->value("udp/port").toInt();
+//    qDebug() << settings;
 
-    qDebug() << settings->allKeys();
+//    qDebug() << settings->allKeys();
 
 
     //测试QQmlListProperty
+
+//    _ipList.append(new QString("ip"));
+
+//    for(auto ip : QNetworkInterface::allAddresses())
+//    {
+//        _ipList.append(new QVariant(ip.toString()));
+//    }
+
+//    for(auto ip : _ipList)
+//    {
+//        qDebug() << *ip;
+//    }
+
+
+    _ipList.append(*new QString("ip"));
+    for(auto ip : QNetworkInterface::allAddresses())
+    {
+        _ipList.append(ip.toString());
+    }
+
 
 }
 
@@ -49,6 +72,33 @@ QVariant SettingCore::value(const QString name)
     //接口成功写好..默认的QVariant里面全部存的QString类型 所以需要注意类型转换
     return settings->value(name);
 }
+
+//QQmlListProperty<QString> SettingCore::getIpAddress()
+//{
+//    //return static_cast<QQmlListProperty<QString>>(_ipList);
+//}
+
+
+
+QVariantList SettingCore::getIpAddress()
+{
+    //return QQmlListProperty<QVariant>(this, 0, &SettingCore::appendIP);
+    return _ipList;
+
+}
+
+QVariantList SettingCore::ipList() const
+{
+    return _ipList;
+}
+
+void SettingCore::setIpList(const QVariant ipLists)
+{
+    _ipList.append(ipLists);
+    emit ipListChanged();
+}
+
+
 
 
 QSharedPointer<SettingCore> &SettingCore::getIns()
