@@ -6,6 +6,7 @@
 #include <QSharedPointer>
 #include <QSettings>
 
+#include <QQmlListProperty>
 
 
 /**
@@ -23,6 +24,10 @@
 class SettingCore : public QObject
 {
     Q_OBJECT
+
+    //测试一个列表类型 这里的属性还是不知道 name? 因为QList中是一个个的QVariant 不符合设计需求
+    //Q_PROPERTY(QQmlListProperty<QVariant> params READ params)
+
 public:
     //QSharedPointer提供了对引用计数的共享指针实现. 相当于 shared_ptr
     static QSharedPointer<SettingCore>& getIns(void);
@@ -35,11 +40,17 @@ public:
 
     qint16 ReadSettings();
 
+    Q_INVOKABLE QVariant value(const QString name);
+
+
+    QQmlListProperty<QVariant> params();
 
 private:
     explicit SettingCore(QObject *parent = nullptr);//防止被new; explicit 限制为显示调用
     SettingCore(const SettingCore&);
     SettingCore& operator==(const SettingCore&);
+
+    QList<QVariant*> _params;
 
 
 signals:

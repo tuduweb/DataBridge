@@ -17,13 +17,24 @@ SettingCore::SettingCore(QObject *parent) : QObject(parent)
 
     qDebug() << settings << QCoreApplication::applicationDirPath()+"/info.ini";
 
-    settings->setValue("aab/bbb",QVariant(0));
-    settings->setValue("aab/cccc",QVariant("test"));
-    settings->setValue("ff/ssss",QVariant(0));
+    //这里需要更改 改成如果没有数值 那么才初始化...
+    settings->setValue("udp/port",QVariant(5556));
+    settings->setValue("udp/ipAddress",QVariant("172.16.0.1"));//文字fitter
+    settings->setValue("master/isRing",QVariant(true));
+    settings->setValue("master/isCrossRoad",QVariant(true));
+    settings->setValue("data/isHex",QVariant(true));
+    settings->setValue("graph/ch1_name",QVariant("kk"));
+    settings->setValue("graph/ch2_name",QVariant("tt"));
 
-    qDebug() << settings->value("aab/bbb").isNull();
+    qDebug() << settings->value("udp/port").isNull();
+    qDebug() << settings->value("udp/port").toInt();
+    qDebug() << settings;
 
     qDebug() << settings->allKeys();
+
+
+    //测试QQmlListProperty
+
 }
 
 SettingCore::~SettingCore()
@@ -31,6 +42,12 @@ SettingCore::~SettingCore()
     qDebug()<<"Destory SeetingCore";
 
     delete settings;
+}
+
+QVariant SettingCore::value(const QString name)
+{
+    //接口成功写好..默认的QVariant里面全部存的QString类型 所以需要注意类型转换
+    return settings->value(name);
 }
 
 

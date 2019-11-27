@@ -9,13 +9,11 @@ SocketBridge::SocketBridge(QObject *parent) : QObject(parent)
     //然后构造变量?
 
     //暂时凑合一下
-    settingCore->settings->beginGroup("udp");
+    //settingCore->settings->beginGroup("udp");
 
 
     //UDP
     udpSocket   = new QUdpSocket(this);
-
-
 
 
     //获取主机地址列表 QList
@@ -26,7 +24,7 @@ SocketBridge::SocketBridge(QObject *parent) : QObject(parent)
     //那么应该存在Setting这个东西?
     //UDP只需要本机地址就可以了
 
-    currentRecPort = (quint16)settingCore->settings->value("port",QVariant(5556)).toInt();
+    currentRecPort = (quint16)settingCore->settings->value("udp/port",QVariant(5556)).toInt();
     //currentClientAddress = <QHostAddress> 选定一个
     //qDebug()<<currentRecPort;
 

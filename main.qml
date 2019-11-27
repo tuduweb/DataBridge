@@ -66,11 +66,26 @@ ApplicationWindow {
                 text: socketBridge.recPort
             }
 
+            Label {
+                text: "QVariant"
+            }
+            TextField{
+                text: settings.value("udp/port")
+            }
+
 
             Switch{
                 Layout.columnSpan: 2
                 text: "OK"
                 onToggled: console.log(this.checked)
+            }
+
+            Button{
+                text: "button"
+                onClicked: {
+                    settings.value("udp/port") = 222;
+                    console.log(settings.value("udp/port"));
+                }
             }
 
 

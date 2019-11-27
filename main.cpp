@@ -28,6 +28,8 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("socketBridge", socketBridge);
+    engine.rootContext()->setContextProperty("settings", settingCore.data());
+
     //注意setContextProperty函数的调用要在load qml之前
     //注意需要在.h中加上宏定义
 
