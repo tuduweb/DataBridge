@@ -4,138 +4,167 @@ import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.5
 
 ApplicationWindow {
+    id: app
     visible: true
-    width: 1200
-    height: 768
-    property alias gridWidth: grid.width
+    width: 1280
+    height: 720
+    //property alias gridWidth: grid.width
 
     property string ipAddress: "172.16.0.1"
 
     property bool isUdpOpen: false
 
-
     title: qsTr("DataBridge")
+
+
 
     //本工具是为了写数据接口
 
-    header: ToolBar{
+//    header: ToolBar{
 
-    }
+//    }
 
     RowLayout{
-        width: parent.width
-        height: parent.height
+//        width: parent.width
+//        height: parent.height
+        clip: false
+        anchors.fill: parent
 
-        GridLayout {
+        Layout.fillHeight: true
+        Layout.fillWidth: true
 
-            id: grid
-            columns: 2
+        ColumnLayout{
+            Layout.maximumWidth: 250
+            Layout.fillWidth: true
+
             Layout.fillHeight: true
-            Layout.fillWidth: false
+            //Layout.fillWidth: true
 
+            GridLayout {
 
-            //width: 200
-            clip: true
-
-
-
-
-            Label {
+                id: grid
                 Layout.fillWidth: true
-                text: "IP"
-
-            }
-
-            ComboBox {
-                id: ipAddressComboBox
-                Layout.fillWidth: true
-                model: settings.ipList
-
-//                //如果需要定制下拉列表内容
-//                delegate: ItemDelegate {
-//                    width: parent.width
-//                    height: 40
-//                    Text{
-//                        anchors.fill: parent
-//                        text: "IP" + modelData
-
-//                    }
+                columns: 2
+                Layout.fillHeight: true
+                //Layout.fillWidth: true
 
 
-//                    MouseArea {
-//                        anchors.fill: parent
-//                        // ...
-//                        onClicked: comboBox.popup.close()
-//                    }
-//                }
-
-            }
-
-//            TextField{
-//                id : ipAddressText
-//                text: ipAddress
-//                //inputMask: qsTr("")
-//                font.family: "Microsoft YaHei"
-//                font.pointSize: 12
-//            }
+                //width: 200
+                clip: true
 
 
-            Label {
-                Layout.fillWidth: true
-                text: "端口号"
-            }
-            TextField{
-                id: ipPortStr
-                Layout.fillWidth: true
-                text: settings.value("udp/port")
-            }
 
-            Button{
-                Layout.columnSpan: 2
-                Layout.fillWidth: true
-                checkable: true
-                text: checked ? "RUNNING" : "START"
-                onClicked: {
-                    console.log(checked);
-                    //绑定信号 执行?or直接在哪里渲染一个开启
-                    socketBridge.bindUdp(ipAddressComboBox.currentText,ipPortStr.text)
+
+                Label {
+                    Layout.fillWidth: true
+
+                    text: "IP"
+
                 }
-            }
+
+                ComboBox {
+                    id: ipAddressComboBox
+                    Layout.fillWidth: true
+                    model: settings.ipList
+
+    //                //如果需要定制下拉列表内容
+    //                delegate: ItemDelegate {
+    //                    width: parent.width
+    //                    height: 40
+    //                    Text{
+    //                        anchors.fill: parent
+    //                        text: "IP" + modelData
+
+    //                    }
 
 
-            Switch{
-                Layout.fillWidth: true
-                Layout.columnSpan: 2
-                text: "OK"
-                onToggled: console.log(this.checked)
-            }
+    //                    MouseArea {
+    //                        anchors.fill: parent
+    //                        // ...
+    //                        onClicked: comboBox.popup.close()
+    //                    }
+    //                }
 
-            Button{
-                Layout.fillWidth: true
-
-                text: "button"
-                onClicked: {
-                    //settings.value("udp/port") = 222;
-                    console.log(settings.value("udp/port"));
                 }
+
+    //            TextField{
+    //                id : ipAddressText
+    //                text: ipAddress
+    //                //inputMask: qsTr("")
+    //                font.family: "Microsoft YaHei"
+    //                font.pointSize: 12
+    //            }
+
+
+                Label {
+                    Layout.fillWidth: true
+                    text: "端口号"
+                }
+                TextField{
+                    id: ipPortStr
+                    Layout.fillWidth: true
+                    text: settings.value("udp/port")
+                }
+
+                Button{
+                    Layout.columnSpan: 2
+                    Layout.fillWidth: true
+                    checkable: true
+                    text: checked ? "RUNNING" : "START"
+                    onClicked: {
+                        console.log(checked);
+                        //绑定信号 执行?or直接在哪里渲染一个开启
+                        socketBridge.bindUdp(ipAddressComboBox.currentText,ipPortStr.text)
+                    }
+                }
+
+
+                Switch{
+                    Layout.fillWidth: true
+                    Layout.columnSpan: 2
+                    text: "OK"
+                    onToggled: console.log(this.checked)
+                }
+
+                Button{
+                    Layout.fillWidth: true
+
+
+                    text: "button"
+                    onClicked: {
+                        //settings.value("udp/port") = 222;
+                        console.log(settings.value("udp/port"));
+                    }
+                }
+
+
+
+                Button{
+                    Layout.fillWidth: true
+
+                    text: "ipAddress"
+                    onClicked: console.log(settings.getIpAddress());
+                }
+
+                Button{
+                    Layout.fillWidth: true
+
+                    text: "QVariantList"
+                    onClicked: {
+                        settings.ipList.push("127.0.0.2");
+                        console.log(settings.ipList);
+                    }
+                }
+
             }
 
 
-
-            Button{
+            Rectangle{
+                Layout.fillHeight: true
                 Layout.fillWidth: true
-
-                text: "ipAddress"
-                onClicked: console.log(settings.getIpAddress());
-            }
-
-            Button{
-                Layout.fillWidth: true
-
-                text: "QVariantList"
-                onClicked: {
-                    settings.ipList.push("127.0.0.2");
-                    console.log(settings.ipList);
+                Text{
+                    anchors.fill: parent
+                    text: "test"
                 }
             }
 
@@ -143,8 +172,7 @@ ApplicationWindow {
         }
 
 
-
-        RowLayout{
+        ColumnLayout{
             Layout.fillHeight: true
             Layout.fillWidth: true
 
@@ -189,14 +217,20 @@ ApplicationWindow {
             }
         }
 
-        Rectangle{
+        ColumnLayout{
+
             Layout.fillHeight: true
             Layout.fillWidth: true
-            color: "#CCC"
 
-            TextArea{
-                anchors.fill: parent
-                text: "MessageData"
+            Rectangle{
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                color: "#CCC"
+
+                TextArea{
+                    anchors.fill: parent
+                    text: "MessageData"
+                }
             }
 
         }

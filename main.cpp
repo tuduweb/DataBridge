@@ -11,6 +11,10 @@
 
 #include <Bridge/socketbridge.h>
 
+#include <datacenter.h>
+
+static DataCenter* dc;
+
 
 int main(int argc, char *argv[])
 {

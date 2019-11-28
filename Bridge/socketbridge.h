@@ -29,6 +29,7 @@ public:
     QHostAddress currentClientAddress;
     QUdpSocket  *udpSocket;//udp
     quint16 currentRecPort;
+    bool isBind;
 
     int CurrentRecPort() const;
     int recPort() const;

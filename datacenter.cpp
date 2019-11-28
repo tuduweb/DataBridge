@@ -8,4 +8,15 @@
 DataCenter::DataCenter(QObject *parent) : QObject(parent)
 {
     //const dataType
+
+
+
+
+
+}
+
+void DataCenter::timerEvent(QTimerEvent *e)
+{
+    Q_UNUSED(e);
+
 }

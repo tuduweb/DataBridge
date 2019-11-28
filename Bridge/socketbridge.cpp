@@ -13,6 +13,7 @@ SocketBridge::SocketBridge(QObject *parent) : QObject(parent)
 
     //UDP
     udpSocket   = new QUdpSocket(this);
+    isBind = false;
 
     //udpSocket->moveToThread(&socketThread);
     //socketThread.start();
@@ -134,11 +135,11 @@ void SocketBridge::receiveUdpData()
 
         //这里的 currentRecPort 是最近一次接收到UDP数据的地址
 
-        //QString current = QHostAddress(currentClientAddress.toIPv4Address()).toString().append("/").append(QString::number(currentRecPort));
+        QString poster = QHostAddress(currentClientAddress.toIPv4Address()).toString().append("/").append(QString::number(currentRecPort));
 
         emit receivedData(datagram);
 
-        qDebug()<<"invalid data size:"<<datagram.count();
+        qDebug()<<poster << " << "<<datagram.count() << " << " << datagram.toHex();
 
 
         /*
@@ -192,11 +193,18 @@ void SocketBridge::udpSendData(QByteArray byteArray)
 bool SocketBridge::bindUdp(const QString ip, const int port)
 {
     //绑定udp
+    if(this->isBind)
+    {
+        this->undindUdp();
+        this->isBind = false;
+        return true;
+    }
     qDebug() << "bind" << ip << "/" << port;
     this->udpSocket->bind(
                 QHostAddress(ip),
                 static_cast<quint16>(port),
                 QUdpSocket::ShareAddress);
+    this->isBind = true;
     return true;
 }
 
