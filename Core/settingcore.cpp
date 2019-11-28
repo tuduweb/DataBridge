@@ -150,7 +150,12 @@ QSharedPointer<SettingCore> &SettingCore::getIns()
     {
         QMutexLocker mutexLocker(&m_Mutex);
         if (m_pInstance.isNull())
+        {
             m_pInstance = QSharedPointer<SettingCore>(new SettingCore());
+            qDebug() << m_pInstance;
+        }
+
+
     }
     return m_pInstance;
 }

@@ -5,6 +5,8 @@
 #include <QTcpSocket>
 #include <QUdpSocket>
 
+#include <QThread>
+
 class SocketBridge : public QObject
 {
     Q_OBJECT
@@ -44,6 +46,8 @@ private:
     int _recPort;
     QString _ipAddress;
     int _currentFlag;
+
+    QThread socketThread;
 
 signals:
     void receivedData(QByteArray byteArray);

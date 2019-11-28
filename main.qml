@@ -5,8 +5,8 @@ import QtQuick.Controls 2.5
 
 ApplicationWindow {
     visible: true
-    width: 800
-    height: 680
+    width: 1200
+    height: 768
     property alias gridWidth: grid.width
 
     property string ipAddress: "172.16.0.1"
@@ -31,17 +31,19 @@ ApplicationWindow {
             id: grid
             columns: 2
             Layout.fillHeight: true
-            Layout.fillWidth: true
+            Layout.fillWidth: false
 
 
-            width: 200
+            //width: 200
             clip: true
 
 
 
 
             Label {
+                Layout.fillWidth: true
                 text: "IP"
+
             }
 
             ComboBox {
@@ -79,6 +81,7 @@ ApplicationWindow {
 
 
             Label {
+                Layout.fillWidth: true
                 text: "端口号"
             }
             TextField{
@@ -101,12 +104,15 @@ ApplicationWindow {
 
 
             Switch{
+                Layout.fillWidth: true
                 Layout.columnSpan: 2
                 text: "OK"
                 onToggled: console.log(this.checked)
             }
 
             Button{
+                Layout.fillWidth: true
+
                 text: "button"
                 onClicked: {
                     //settings.value("udp/port") = 222;
@@ -117,11 +123,15 @@ ApplicationWindow {
 
 
             Button{
+                Layout.fillWidth: true
+
                 text: "ipAddress"
                 onClicked: console.log(settings.getIpAddress());
             }
 
             Button{
+                Layout.fillWidth: true
+
                 text: "QVariantList"
                 onClicked: {
                     settings.ipList.push("127.0.0.2");
@@ -134,10 +144,49 @@ ApplicationWindow {
 
 
 
-        Rectangle{
+        RowLayout{
             Layout.fillHeight: true
             Layout.fillWidth: true
-            color: "#CCC"
+
+            //需要定义一个图像处理窗口控件 Component
+
+            Rectangle{
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                height: parent.height/3
+
+                color: "#CCC"
+                Image{
+                    width: parent.width
+                    height: width/188*120
+                    source: "file:///P:/qt/smartcar/GodHelper2.0/DataBridge/Images/test--2110444809.bmp"
+                    Text{
+                        width: parent.width
+                        height: parent.width
+                        anchors.fill: parent
+                        text: "Picture"
+                        color: "#FFF"
+                    }
+                    Rectangle{
+                        width: parent.width
+                        height: 40
+                        color: "#55FFFFFF"
+                        anchors.bottom: parent.bottom
+                    }
+                }
+            }
+
+            Rectangle{
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                height: parent.height/3
+
+                color: "#DDD"
+                Text {
+                    width: parent.width
+                    text: qsTr("Monitor")
+                }
+            }
         }
 
         Rectangle{
@@ -147,7 +196,7 @@ ApplicationWindow {
 
             TextArea{
                 anchors.fill: parent
-                text: "这里是数据"
+                text: "MessageData"
             }
 
         }

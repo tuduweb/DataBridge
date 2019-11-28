@@ -14,6 +14,11 @@ SocketBridge::SocketBridge(QObject *parent) : QObject(parent)
     //UDP
     udpSocket   = new QUdpSocket(this);
 
+    //udpSocket->moveToThread(&socketThread);
+    //socketThread.start();
+    //Tips:在某线程中调用函数，这个函数一定是在这个线程中执行的!这里是一个究极大坑。如果仔细想想还是可以避免踩坑的。
+
+
 
     //获取主机地址列表 QList
 //    QString strIpAddress;
@@ -65,7 +70,6 @@ SocketBridge::SocketBridge(QObject *parent) : QObject(parent)
     //需要把以上数据渲染出去.
 
     //MVC模式最大的特点 View中是不带数据的 所以 <数据>不应该在UI中.
-
 
 
 

@@ -62,6 +62,7 @@ private:
     QVariantList _ipList;
 
 
+
 signals:
     void ipListChanged();
 
