@@ -37,6 +37,9 @@ public:
     void setIpAddress(QString ip);
     void udpSendData(QByteArray byteArray);
 
+    Q_INVOKABLE bool bindUdp(const QString ip,const int port);
+    Q_INVOKABLE bool undindUdp();
+
 private:
     int _recPort;
     QString _ipAddress;

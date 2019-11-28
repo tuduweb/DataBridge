@@ -11,6 +11,8 @@ ApplicationWindow {
 
     property string ipAddress: "172.16.0.1"
 
+    property bool isUdpOpen: false
+
 
     title: qsTr("DataBridge")
 
@@ -43,7 +45,8 @@ ApplicationWindow {
             }
 
             ComboBox {
-                id: comboBox
+                id: ipAddressComboBox
+                Layout.fillWidth: true
                 model: settings.ipList
 
 //                //如果需要定制下拉列表内容
@@ -74,18 +77,26 @@ ApplicationWindow {
 //                font.pointSize: 12
 //            }
 
-            Label {
-                text: "Port"
-            }
-            TextField{
-                text: socketBridge.recPort
-            }
 
             Label {
-                text: "QVariant"
+                text: "端口号"
             }
             TextField{
+                id: ipPortStr
+                Layout.fillWidth: true
                 text: settings.value("udp/port")
+            }
+
+            Button{
+                Layout.columnSpan: 2
+                Layout.fillWidth: true
+                checkable: true
+                text: checked ? "RUNNING" : "START"
+                onClicked: {
+                    console.log(checked);
+                    //绑定信号 执行?or直接在哪里渲染一个开启
+                    socketBridge.bindUdp(ipAddressComboBox.currentText,ipPortStr.text)
+                }
             }
 
 

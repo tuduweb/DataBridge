@@ -51,11 +51,53 @@ SettingCore::SettingCore(QObject *parent) : QObject(parent)
 //    }
 
 
-    _ipList.append(*new QString("ip"));
+//    for (int i = 0,nListSize = ipAddressesList.size(); i < nListSize; ++i)
+//    {
+//           if (ipAddressesList.at(i) != QHostAddress::LocalHost && ipAddressesList.at(i).toIPv4Address()) {
+//               if (strIpAddress.isEmpty())
+//               {
+//                   strIpAddress = ipAddressesList.at(i).toString();
+//                   //break;
+//               }
+//               //localHostAddrComboBox->addItem(strIpAddress);
+//               //把以下内容要改到系统日志中..
+//               qDebug()<<"["<<i<<"]"<<ipAddressesList.at(i).toString();
+
+//           }
+//    }
+//    // 如果没有找到，则以本地IP地址为IP
+//    if (strIpAddress.isEmpty())
+//    {
+//        strIpAddress = QHostAddress(QHostAddress::LocalHost).toString();
+//        //localHostAddrComboBox->addItem(strIpAddress);
+//    }
+
+    //构造IP地址
+
+    QString strIpAddress;
+
     for(auto ip : QNetworkInterface::allAddresses())
     {
-        _ipList.append(ip.toString());
+        if (ip != QHostAddress::LocalHost && ip.toIPv4Address()) {
+            if (strIpAddress.isEmpty())
+            {
+                strIpAddress = ip.toString();
+                //break;
+            }
+            //localHostAddrComboBox->addItem(strIpAddress);
+            //把以下内容要改到系统日志中..
+            qDebug()<<"[ip]"<<ip.toString();
+            _ipList.append(ip.toString());
+
+        }
+
+        //_ipList.append(ip.toString());
     }
+
+    //settings->setValue("udp/lastIpList",_ipList);
+
+    //qDebug() << "t1" << settings->value("udp/lastIpList");
+    //qDebug() << "t2" << settings->value("udp/lastIpList").toStringList();
 
 
 }
