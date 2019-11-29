@@ -80,44 +80,21 @@ SocketBridge::SocketBridge(QObject *parent) : QObject(parent)
     connect(udpSocket,&QUdpSocket::stateChanged,this,&SocketBridge::udpStateChanged);
     connect(udpSocket,static_cast<void (QUdpSocket::*)(QAbstractSocket::SocketError socketError)>
             (&QUdpSocket::error),this,&SocketBridge::udpErrorOccur);
+
+    connect(this,&SocketBridge::receivedData,[=](QByteArray data){
+        qDebug() << &data;
+    });
+}
+
+SocketBridge::SocketBridge(QList<QByteArray *> &arrayList, QObject *parent) : SocketBridge(parent)
+{
+    qDebug() << &arrayList;
 }
 
 SocketBridge::~SocketBridge()
 {
     this->disconnect();
     //
-}
-
-int SocketBridge::CurrentRecPort() const
-{
-    return currentRecPort;
-}
-
-int SocketBridge::recPort() const
-{
-    return _recPort;
-}
-
-QString SocketBridge::ipAddress() const
-{
-    return _ipAddress;
-}
-
-int SocketBridge::currentFlag() const
-{
-    return _currentFlag;
-}
-
-void SocketBridge::setRecPort(int port)
-{
-    _recPort = port;
-    emit recPortChanged();
-}
-
-void SocketBridge::setIpAddress(QString ip)
-{
-    _ipAddress = ip;
-    emit ipAddressChanged();
 }
 
 //UDP数据接收
@@ -137,9 +114,11 @@ void SocketBridge::receiveUdpData()
 
         QString poster = QHostAddress(currentClientAddress.toIPv4Address()).toString().append("/").append(QString::number(currentRecPort));
 
+        //在事件队列中的是QByteArray的拷贝，其中内容指针也会改变.即全拷贝?
+        //为了防止内容改变.那么需要实现一定的功能..
         emit receivedData(datagram);
 
-        qDebug()<<poster << " << "<<datagram.count() << " << " << datagram.toHex();
+        qDebug()<<poster << " << " << datagram.data() << " << " <<datagram.count() << " << " << datagram.toHex();
 
 
         /*
@@ -180,6 +159,7 @@ void SocketBridge::udpStateChanged(QAbstractSocket::SocketState socketState)
         break;
     }
 }
+
 void SocketBridge::udpErrorOccur(QAbstractSocket::SocketError socketError)
 {
    emit error(udpSocket->errorString());
@@ -212,5 +192,10 @@ bool SocketBridge::undindUdp()
 {
     this->udpSocket->close();
     return true;
+}
+
+void SocketBridge::bindUdpSlot(const QString ip, const int port)
+{
+    this->bindUdp(ip,port);
 }
 

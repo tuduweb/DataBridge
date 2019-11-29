@@ -13,6 +13,8 @@ ApplicationWindow {
     property string ipAddress: "172.16.0.1"
 
     property bool isUdpOpen: false
+    signal bindUdp(string ip,int port)
+
 
     title: qsTr("DataBridge")
 
@@ -30,143 +32,171 @@ ApplicationWindow {
         clip: false
         anchors.fill: parent
 
-        Layout.fillHeight: true
-        Layout.fillWidth: true
+        Layout.leftMargin: 5
+
+
 
         ColumnLayout{
             Layout.maximumWidth: 250
             Layout.fillWidth: true
-
             Layout.fillHeight: true
+
+
+
             //Layout.fillWidth: true
 
-            GridLayout {
-
-                id: grid
-                Layout.fillWidth: true
-                columns: 2
-                Layout.fillHeight: true
-                //Layout.fillWidth: true
-
-
-                //width: 200
-                clip: true
-
-
-
-
-                Label {
-                    Layout.fillWidth: true
-
-                    text: "IP"
-
-                }
-
-                ComboBox {
-                    id: ipAddressComboBox
-                    Layout.fillWidth: true
-                    model: settings.ipList
-
-    //                //如果需要定制下拉列表内容
-    //                delegate: ItemDelegate {
-    //                    width: parent.width
-    //                    height: 40
-    //                    Text{
-    //                        anchors.fill: parent
-    //                        text: "IP" + modelData
-
-    //                    }
-
-
-    //                    MouseArea {
-    //                        anchors.fill: parent
-    //                        // ...
-    //                        onClicked: comboBox.popup.close()
-    //                    }
-    //                }
-
-                }
-
-    //            TextField{
-    //                id : ipAddressText
-    //                text: ipAddress
-    //                //inputMask: qsTr("")
-    //                font.family: "Microsoft YaHei"
-    //                font.pointSize: 12
-    //            }
-
-
-                Label {
-                    Layout.fillWidth: true
-                    text: "端口号"
-                }
-                TextField{
-                    id: ipPortStr
-                    Layout.fillWidth: true
-                    text: settings.value("udp/port")
-                }
-
-                Button{
-                    Layout.columnSpan: 2
-                    Layout.fillWidth: true
-                    checkable: true
-                    text: checked ? "RUNNING" : "START"
-                    onClicked: {
-                        console.log(checked);
-                        //绑定信号 执行?or直接在哪里渲染一个开启
-                        socketBridge.bindUdp(ipAddressComboBox.currentText,ipPortStr.text)
-                    }
-                }
-
-
-                Switch{
-                    Layout.fillWidth: true
-                    Layout.columnSpan: 2
-                    text: "OK"
-                    onToggled: console.log(this.checked)
-                }
-
-                Button{
-                    Layout.fillWidth: true
-
-
-                    text: "button"
-                    onClicked: {
-                        //settings.value("udp/port") = 222;
-                        console.log(settings.value("udp/port"));
-                    }
-                }
-
-
-
-                Button{
-                    Layout.fillWidth: true
-
-                    text: "ipAddress"
-                    onClicked: console.log(settings.getIpAddress());
-                }
-
-                Button{
-                    Layout.fillWidth: true
-
-                    text: "QVariantList"
-                    onClicked: {
-                        settings.ipList.push("127.0.0.2");
-                        console.log(settings.ipList);
-                    }
-                }
-
-            }
-
-
             Rectangle{
+                id: socketWrap
+                Layout.maximumHeight: 150
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                Text{
+
+                GridLayout {
+
+                    id: socketWrapLayout
+                    columns: 2
                     anchors.fill: parent
-                    text: "test"
+
+
+                    //Layout.fillWidth: true
+
+
+                    //width: 200
+                    clip: true
+
+
+
+
+                    Label {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+
+                        text: "IP"
+
+                    }
+
+                    ComboBox {
+                        id: ipAddressComboBox
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+
+                        model: settings.ipList
+
+        //                //如果需要定制下拉列表内容
+        //                delegate: ItemDelegate {
+        //                    width: parent.width
+        //                    height: 40
+        //                    Text{
+        //                        anchors.fill: parent
+        //                        text: "IP" + modelData
+
+        //                    }
+
+
+        //                    MouseArea {
+        //                        anchors.fill: parent
+        //                        // ...
+        //                        onClicked: comboBox.popup.close()
+        //                    }
+        //                }
+
+                    }
+
+        //            TextField{
+        //                id : ipAddressText
+        //                text: ipAddress
+        //                //inputMask: qsTr("")
+        //                font.family: "Microsoft YaHei"
+        //                font.pointSize: 12
+        //            }
+
+
+                    Label {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+
+                        text: "端口号"
+                    }
+                    TextField{
+                        id: ipPortStr
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+
+                        text: settings.value("udp/port")
+                    }
+
+                    Button{
+
+
+                        Layout.columnSpan: 2
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+
+                        checkable: true
+                        text: checked ? "RUNNING" : "START"
+                        onClicked: {
+                            console.log(checked);
+                            //绑定信号 执行?or直接在哪里渲染一个开启
+                            //socketBridge.bindUdp(ipAddressComboBox.currentText,ipPortStr.text)
+                            bindUdp(ipAddressComboBox.currentText,ipPortStr.text)
+                            //socketWrap.color = "#ccc"
+                        }
+                        Component.onCompleted:{
+                            bindUdp.connect(dataCenter.bindUdpSlot);
+                        }
+                    }
+
+
+//                    Component.onCompleted: {
+//                        console.log(socketWrapLayout.children)
+//                        for(var i in socketWrapLayout.children)
+//                            console.log(socketWrapLayout.children[i].anchors.leftMarin = 5)
+//                    }
+
+
+
+
+
+
+
+
                 }
+
             }
+
+            Item{
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                RowLayout{
+                    anchors.fill: parent
+
+                    Label{
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        text: qsTr("RateMonitor")
+                        font.pixelSize: 18
+                        font.family: "Microsoft YaHei"
+                        //Layout.margins: 2
+                        //Layout.leftMargin: 5
+                    }
+
+                    Text{
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        text: qsTr("100kb/s")
+                    }
+                }
+
+            }
+
+            Switch{
+                Layout.fillWidth: true
+                text: "OK"
+                onToggled: console.log(this.checked)
+            }
+
+
 
 
         }

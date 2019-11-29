@@ -9,14 +9,41 @@ DataCenter::DataCenter(QObject *parent) : QObject(parent)
 {
     //const dataType
 
+    qDebug() << &dataStorage;
+    socketBridge = new SocketBridge(dataStorage);
+    socketBridge->moveToThread(&socketBridgeThread);
+    socketBridgeThread.start();
+
+    connect(socketBridge,&SocketBridge::receivedData,this,[=](QByteArray byteArray){
+        qDebug() << &byteArray;
+    });
 
 
+}
 
-
+DataCenter::~DataCenter()
+{
+    //没有加入内存管理的内容 object parent
+    qDebug() << "DataCenter Destory begin";
+    socketBridgeThread.exit(0);
+    socketBridgeThread.wait();
+    qDebug() << "DataCenter Destory";
+    delete socketBridge;
 }
 
 void DataCenter::timerEvent(QTimerEvent *e)
 {
     Q_UNUSED(e);
 
+}
+
+void DataCenter::dataSteamSlot(QByteArray &byteArray)
+{
+
+}
+
+void DataCenter::bindUdpSlot(const QString ip,const int port)
+{
+    qDebug() << "binUdpSlot << " << ip << "/" << port;
+    //socketBridge->bindUdp(ip,port);
 }

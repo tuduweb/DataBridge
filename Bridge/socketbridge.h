@@ -11,10 +11,6 @@ class SocketBridge : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(int currentRecPort READ CurrentRecPort)
-
-    Q_PROPERTY(int recPort READ recPort WRITE setRecPort NOTIFY recPortChanged)
-    Q_PROPERTY(QString ipAddress READ ipAddress WRITE setIpAddress NOTIFY ipAddressChanged)
 
 
 
@@ -24,29 +20,25 @@ class SocketBridge : public QObject
 
 public:
     explicit SocketBridge(QObject *parent = nullptr);
+    explicit SocketBridge(QList<QByteArray *> &arrayList,QObject *parent = nullptr);
+
+
     ~SocketBridge();
 
-    QHostAddress currentClientAddress;
     QUdpSocket  *udpSocket;//udp
     quint16 currentRecPort;
+    QHostAddress currentClientAddress;
+
     bool isBind;
 
-    int CurrentRecPort() const;
-    int recPort() const;
-    QString ipAddress() const;
-    int currentFlag() const;
 
-    void setRecPort(int port);
-    void setIpAddress(QString ip);
     void udpSendData(QByteArray byteArray);
 
     Q_INVOKABLE bool bindUdp(const QString ip,const int port);
     Q_INVOKABLE bool undindUdp();
 
 private:
-    int _recPort;
-    QString _ipAddress;
-    int _currentFlag;
+
 
     QThread socketThread;
 
@@ -56,11 +48,8 @@ signals:
     void error(QString str);
     void newMassage(QString str);
 
-    //test for qml q_property
-    void recPortChanged();
-    void ipAddressChanged();
-
 public slots:
+    void bindUdpSlot(const QString ip,const int port);
 
 private slots:
     void receiveUdpData();
