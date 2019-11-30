@@ -14,9 +14,11 @@ DataCenter::DataCenter(QObject *parent) : QObject(parent)
     socketBridge->moveToThread(&socketBridgeThread);
     socketBridgeThread.start();
 
-    connect(socketBridge,&SocketBridge::receivedData,this,[=](QByteArray byteArray){
-        qDebug() << &byteArray;
-    });
+//    connect(socketBridge,SocketBridge::receivedData,[=](QByteArray byteArray){
+//        qDebug() << &byteArray;
+//    });
+
+    connect(socketBridge,static_cast<void (SocketBridge::*)(QByteArray*)>(&SocketBridge::receivedData),this,&DataCenter::dataSteamSlot);
 
 
 }
@@ -37,8 +39,14 @@ void DataCenter::timerEvent(QTimerEvent *e)
 
 }
 
-void DataCenter::dataSteamSlot(QByteArray &byteArray)
+void DataCenter::dataSteamSlot(QByteArray *byteArray)
 {
+    /***
+     * &byteArray 应该是stack里面的地址
+     * **/
+    qDebug() << "=================================";
+    qDebug() << "DataSize : " << byteArray->size();
+    qDebug() << "DataAddr : " << byteArray;
 
 }
 

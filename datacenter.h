@@ -30,7 +30,7 @@ signals:
     void imgDataSignal(QByteArray b,quint8 type);
 
 public slots:
-    void dataSteamSlot(QByteArray &byteArray);//引用代表一个别名
+    void dataSteamSlot(QByteArray *byteArray);//引用代表一个别名
     void bindUdpSlot(QString ip,int port);
 };
 

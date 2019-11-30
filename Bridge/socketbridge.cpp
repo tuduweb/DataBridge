@@ -81,7 +81,7 @@ SocketBridge::SocketBridge(QObject *parent) : QObject(parent)
     connect(udpSocket,static_cast<void (QUdpSocket::*)(QAbstractSocket::SocketError socketError)>
             (&QUdpSocket::error),this,&SocketBridge::udpErrorOccur);
 
-    connect(this,&SocketBridge::receivedData,[=](QByteArray data){
+    connect(this,static_cast<void (SocketBridge::*)(QByteArray)>(&SocketBridge::receivedData),[=](QByteArray data){
         qDebug() << &data;
     });
 }
@@ -89,6 +89,8 @@ SocketBridge::SocketBridge(QObject *parent) : QObject(parent)
 SocketBridge::SocketBridge(QList<QByteArray *> &arrayList, QObject *parent) : SocketBridge(parent)
 {
     qDebug() << &arrayList;
+
+    dataStorge = &arrayList;
 }
 
 SocketBridge::~SocketBridge()
@@ -106,20 +108,30 @@ void SocketBridge::receiveUdpData()
     {
         QByteArray datagram;
 
-        datagram.resize((int)udpSocket->pendingDatagramSize());
+        QByteArray *datagramPtr = new QByteArray();
+        datagramPtr->resize(static_cast<int>(udpSocket->pendingDatagramSize()));
 
-        udpSocket->readDatagram(datagram.data(),datagram.size(),&currentClientAddress,&currentRecPort);//保存到当前地址
+        //dataStorge->append(new QByteArray())
+        //datagram.resize((int)udpSocket->pendingDatagramSize());
+        //udpSocket->readDatagram(datagram.data(),datagram.size(),&currentClientAddress,&currentRecPort);//保存到当前地址
+
+
+        udpSocket->readDatagram(datagramPtr->data(),datagramPtr->size(),&currentClientAddress,&currentRecPort);//保存到当前地址
+
 
         //这里的 currentRecPort 是最近一次接收到UDP数据的地址
+
+        dataStorge->append(datagramPtr);
 
         QString poster = QHostAddress(currentClientAddress.toIPv4Address()).toString().append("/").append(QString::number(currentRecPort));
 
         //在事件队列中的是QByteArray的拷贝，其中内容指针也会改变.即全拷贝?
         //为了防止内容改变.那么需要实现一定的功能..
-        emit receivedData(datagram);
+        emit receivedData(*datagramPtr);
 
-        qDebug()<<poster << " << " << datagram.data() << " << " <<datagram.count() << " << " << datagram.toHex();
+        emit receivedData(datagramPtr);
 
+        qDebug()<<poster << " << " << datagramPtr << " << " << datagramPtr->data() << " << " <<datagramPtr->count() << " << " << datagramPtr->toHex();
 
         /*
         int ret = strData.compare("GetIPAddr");//这一段是判断命令的 就是返回ip地址!所以抄写的时候一定要注意这些关系

@@ -31,6 +31,8 @@ public:
 
     bool isBind;
 
+    QList<QByteArray *>* dataStorge;
+
 
     void udpSendData(QByteArray byteArray);
 
@@ -39,7 +41,6 @@ public:
 
 private:
 
-
     QThread socketThread;
 
 signals:
@@ -47,6 +48,8 @@ signals:
     void warning(QString str);
     void error(QString str);
     void newMassage(QString str);
+
+    void receivedData(QByteArray *byteArray);
 
 public slots:
     void bindUdpSlot(const QString ip,const int port);
