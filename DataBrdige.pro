@@ -16,7 +16,9 @@ SOURCES += \
         main.cpp \
     datacenter.cpp \
     Bridge/socketbridge.cpp \
-    Core/settingcore.cpp
+    Core/settingcore.cpp \
+    Process/dataprocess.cpp \
+    Process/imageprocess.cpp
 
 RESOURCES += qml.qrc
 
@@ -34,4 +36,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     datacenter.h \
     Bridge/socketbridge.h \
-    Core/settingcore.h
+    Core/settingcore.h \
+    Process/dataprocess.h \
+    Process/imageprocess.h

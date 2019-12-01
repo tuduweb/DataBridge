@@ -4,6 +4,21 @@
 #include <QObject>
 
 #include <Bridge/socketbridge.h>
+#include <Process/dataprocess.h>
+
+
+//写一个试试水
+struct dataProcess_thread_typedef
+{
+    QThread thread;
+    DataProcess obj;
+    dataProcess_thread_typedef()
+    {
+        qDebug() << "thread Init";
+    }
+};
+
+
 
 class DataCenter : public QObject
 {
@@ -17,14 +32,21 @@ public:
     SocketBridge* socketBridge;
     QThread socketBridgeThread;
 
+    DataProcess* dataProcess;
 
+    QList<QByteArray> testData;
+
+    QList<DataProcess*> dataProcList;
+
+    //friend class DataProcess;
 
 private:
-    intmax_t TotalRecSize;//接收大小
+    intmax_t totalRecSize;//接收大小
     intmax_t recPackCnt;//接收包数量
     intmax_t intervalRecSize[5];//时间间隔内接收的大小
 
     QList<QByteArray*> dataStorage;
+    //QList<QByteArray> dataStorageTest;
 
 signals:
     void imgDataSignal(QByteArray b,quint8 type);
