@@ -1,5 +1,8 @@
 #include "dataprocess.h"
 
+#include <QDebug>
+
+
 //数据解析 兼容匿名上位机..
 typedef enum
 {
@@ -63,6 +66,7 @@ bool DataProcess::ProcessPackage(QByteArray &byteArray)
 
     //取得首地址..这里需要解决一下问题
     const uchar* dataPtr = (const uchar*)byteData->constData();
+    uint8_t check = 0;//校验
 
     do{
         switch(commData.status){
@@ -100,11 +104,84 @@ bool DataProcess::ProcessPackage(QByteArray &byteArray)
             //qDebug()<<commData.type;
             break;
 
+        case COMM_STATUS_LEN:
+            //拼接大小..
+            commData.dataSize = (uint16_t)((*dataPtr++)<<8);
+            commData.dataSize += *(dataPtr++);
+            size--;//这里解析了两个.. 所以要多减掉一个大小
+            //dataPtr+=2;
+            if(commData.dataSize == 0)
+            {
+                commData.status = COMM_STATUS_IDLE;
+            }else{
+                //待填充的数据大小..
+                commData.toFillSize = commData.dataSize;
+                //开辟一个新的连续的数据地址块..存储包实际数据.
+                commData.dataPtr = new uchar[commData.dataSize];//这里是原始数据.需要保存 or 删除掉..
+                commData.status = COMM_STATUS_DATA;
+            }
+            break;
 
+        case COMM_STATUS_DATA:
+        //解析数据
+            if(commData.toFillSize <= size)
+            {
+                //填充
+                memcpy(commData.dataPtr + commData.dataSize - commData.toFillSize,dataPtr,commData.toFillSize);
+                dataPtr+=commData.toFillSize;//指针指向了最后..
+                //总大小 - 已经填充大小 <= 剩余的长度.那么本次可以填充完数据.执行填充数据..
+                size -= commData.toFillSize;//剩余包的大小 当前大小 - 本次会填充的大小
+                commData.toFillSize = 0;//剩余填充0
+                //delete []commData.dataPtr;
+                commData.status = COMM_STATUS_CHECK;
+                //emit 开始解析...
+
+                //ProcessPackage(&commData);
+            }else{
+                //本次没办法填充完.那么把剩余的内容全填充了.
+                size_t t = size;
+                memcpy(commData.dataPtr + commData.dataSize - commData.toFillSize,dataPtr,t);
+                qDebug()<<QString("fill %1 %2").arg(commData.dataSize - commData.toFillSize).arg(size);
+                //dataPtr+=size;//全部传输完毕 所以不需要指针移动了。指向末尾
+                commData.toFillSize -= size;
+                size = 0;
+            }
+            break;
+
+        case COMM_STATUS_CHECK:
+            //校验方法..需要单独弄出去
+            for(int i =0;i<120;i++)
+            {
+                check += (*(uint8_t (*)[120][188])commData.dataPtr)[i][i + 34];
+            }
+
+            //数据校验..验证
+            if(check != *dataPtr++)
+            {
+                commData.status = COMM_STATUS_IDLE;
+            }else{
+                commData.status = COMM_STATUS_END;
+            }
+            break;
+
+            //结束符..如果没有结束符那还是有问题..我觉得可以不要结束符号..
+        case COMM_STATUS_END:
+            if(0xff == *dataPtr++)
+            {
+                //ProcessPackage(&commData);
+            }
+            //完成整个步骤.本数据解析实力重置到空闲状态..
+            commData.status = COMM_STATUS_IDLE;
+
+            break;
 
 
         default:
             break;
         }
-    }while(size >= 0);
+    }while(--size >= 0);
+
+    //...上面的步骤当没有新的数据包后,就会停止,等待下一次数据。
+
+    //一个MTU包大概是1300字节左右. 1300*8
 }
